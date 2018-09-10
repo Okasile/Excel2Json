@@ -2,6 +2,9 @@
 using System;
 using System.Windows.Forms;
 using System.IO;
+using System.Xml;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace ExcelRead
 {
@@ -9,7 +12,7 @@ namespace ExcelRead
     {
         public Form1()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -49,17 +52,87 @@ namespace ExcelRead
         }
 
         private void button3_Click(object sender, EventArgs e)
-        {
-            Microsoft.Office.Interop.Excel.Application app = null;
+        {            
+            bool isXml;
             try
             {
-                //open excel
-                app = new Microsoft.Office.Interop.Excel.Application();
-                if (app == null)
+                 isXml= textBox1.Text.Substring(textBox1.Text.Length - 3, 3) == "xml";
+            }
+            catch
+            {
+                MessageBox.Show("excel 路径?");
+                return;
+            }
+            string btnRawText = button3.Text;
+            button3.Hide();
+            //xml
+            if (isXml)
+            {
+                try
                 {
-                    MessageBox.Show("xiongdi ni mei zhuang excel ba?");                    
-                    return;
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(textBox1.Text);
+                    XmlNode root = doc.DocumentElement;
+                    XmlNode tarSheet = null;
+                    List<XmlNode> sheets = new List<XmlNode>();
+                    sheets.Add(null); //从1开始 null 填充0
+                    foreach (XmlNode node in root.ChildNodes)
+                    {
+                        if (node.Name == "Worksheet")
+                        {
+                            sheets.Add(node);
+                        }
+                    }
+                    tarSheet = sheets[(int)numericUpDown1.Value];//Worksheet:table::raw::cell
+                    XmlNode table = null;
+                    foreach (XmlNode node in tarSheet)
+                    {
+                        if (node.Name == "Table")
+                        {
+                            table = node;
+                            break;
+                        }
+                    }
+                    int x = table.ChildNodes.Count;
+                    int y = table.FirstChild.ChildNodes.Count;
+                    string[][] content = new string[x][];
+                    for (int i = 0; i < content.Length; i++)
+                    {
+                        content[i] = new string[y];
+                    }
+                    for (int i = 0; i < x; i++)
+                    {
+                        for (int j = 0; j < y; j++)
+                        {
+                            var v = table.ChildNodes[i].ChildNodes[j];
+                            if (v != null)
+                                content[i][j] = v.FirstChild.InnerText;
+                        }
+                    }
+                    //json
+                    string s = LitJson.JsonMapper.ToJson(content);
+                    SaveToFile(s);
                 }
+                catch
+                {
+                    button3.Show();
+                }
+                return;
+            }
+
+            //xls
+
+            Microsoft.Office.Interop.Excel.Application app = null;
+
+            //open excel
+            app = new Microsoft.Office.Interop.Excel.Application();
+            if (app == null)
+            {
+                MessageBox.Show("转存成xml试试");
+                return;
+            }
+            try
+            {
                 app.Visible = false;
                 try
                 {
@@ -69,13 +142,13 @@ namespace ExcelRead
                 {
                     MessageBox.Show("大哥,Excel路径是不是错了");
                     app.Quit();
+                    button3.Show();
                     return;
                 }
                 //read excel
                 _Worksheet ws = app.Sheets[(int)numericUpDown1.Value];
                 int x = ws.UsedRange.Rows.Count;
-                int y = ws.UsedRange.Columns.Count;                
-                MessageBox.Show(string.Format("rows: {0}  columns:{1}", x, y));
+                int y = ws.UsedRange.Columns.Count;
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 string[][] content = new string[x][];
                 for (int i = 0; i < x; i++)
@@ -94,27 +167,42 @@ namespace ExcelRead
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 app.Quit();
                 string jsonContent = LitJson.JsonMapper.ToJson(content);
-                StreamWriter sw = null;
-                try
-                {
-                    sw = new StreamWriter(textBox2.Text, false);
-                }
-                catch
-                {
-                    MessageBox.Show("Save path error!");
-                    if (sw != null)
-                        sw.Close();
-                    return;
-                }
-                sw.Write(jsonContent);
-                sw.Flush();
-                sw.Close();
+                SaveToFile(jsonContent);
             }
             catch
             {
                 if (app != null)
                     app.Quit();
+                button3.Show();
             }
+            button3.Text = btnRawText;
         }
+
+        void SaveToFile(string jsonContent)
+        {
+            StreamWriter sw = null;
+            try
+            {
+                sw = new StreamWriter(textBox2.Text, false);
+            }
+            catch
+            {
+                MessageBox.Show("Save path error!");
+                if (sw != null)
+                    sw.Close();
+                button3.Show();
+                return;
+            }
+            sw.Write(jsonContent);
+            sw.Flush();
+            sw.Close();
+            var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);            
+            if (m == DialogResult.Yes)
+            {
+                System.Diagnostics.Process.Start(textBox2.Text);
+            }
+            button3.Show();
+        }
+
     }
 }

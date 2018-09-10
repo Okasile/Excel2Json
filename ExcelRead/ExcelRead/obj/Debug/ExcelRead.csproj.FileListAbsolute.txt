@@ -1,0 +1,12 @@
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csprojAssemblyReference.cache
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.Form1.resources
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.Properties.Resources.resources
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.GenerateResource.cache
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CoreCompileInputs.cache
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\bin\Debug\ExcelRead.exe.config
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\bin\Debug\ExcelRead.exe
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\bin\Debug\ExcelRead.pdb
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\bin\Debug\LitJSON.dll
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CopyComplete
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.exe
+C:\Users\34446\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.pdb
