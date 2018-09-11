@@ -1,0 +1,10 @@
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\bin\Release\ExcelRead.exe.config
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\bin\Release\ExcelRead.exe
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\bin\Release\ExcelRead.pdb
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.csprojAssemblyReference.cache
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.Form1.resources
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.Properties.Resources.resources
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.csproj.GenerateResource.cache
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.exe
+C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.pdb
