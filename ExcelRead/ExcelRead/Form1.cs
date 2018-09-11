@@ -173,6 +173,7 @@ namespace ExcelRead
                 if (app != null)
                     app.Quit();
                 button3.Show();
+                MessageBox.Show("Failed");
             }
             button3.Text = btnRawText;
         }
