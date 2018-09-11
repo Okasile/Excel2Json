@@ -148,7 +148,7 @@ namespace ExcelRead
                 _Worksheet ws = app.Sheets[(int)numericUpDown1.Value];
                 int x = ws.UsedRange.Rows.Count;
                 int y = ws.UsedRange.Columns.Count;
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                 string[][] content = new string[x][];
                 for (int i = 0; i < x; i++)
                 {
@@ -163,9 +163,14 @@ namespace ExcelRead
                             content[i][j] = ((Range)v).Text;
                     }
                 }
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                 app.Quit();
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                var c = new Con();
+
                 string jsonContent = LitJson.JsonMapper.ToJson(content);
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                 SaveToFile(jsonContent);
             }
             catch
@@ -203,6 +208,12 @@ namespace ExcelRead
             }
             button3.Show();
         }
+    }
 
+    class Con
+    {
+        public int effectID, id, price_Sell, price_Buy;
+        public string pictureName, name, definitionID;
+        public bool canUseWhenFighting, stackable;
     }
 }
