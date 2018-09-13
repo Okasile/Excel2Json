@@ -51,11 +51,11 @@ namespace ExcelRead
         }
 
         private void button3_Click(object sender, EventArgs e)
-        {            
+        {
             bool isXml;
             try
             {
-                 isXml= textBox1.Text.Substring(textBox1.Text.Length - 3, 3) == "xml";
+                isXml = textBox1.Text.Substring(textBox1.Text.Length - 3, 3) == "xml";
             }
             catch
             {
@@ -166,9 +166,52 @@ namespace ExcelRead
 
                 app.Quit();
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                var c = new Con();
+                //                 List<Con> cons = new List<Con>();
+                //                 for (int i = 1; i < content.Length; i++)
+                //                 {
+                //                     string[] cur = content[i];
+                //                     Con c = new Con();
+                //                     c.id = int.Parse(cur[0]);
+                //                     c.price_Sell = int.Parse(cur[1]);
+                //                     c.price_Buy = int.Parse(cur[2]);
+                //                     c.pictureName = cur[3];
+                //                     c.nameID = int.Parse(cur[4]);
+                //                     c.definitionID = cur[5];
+                //                     c.canUseWhenFighting = cur[6] == "TRUE";
+                //                     c.stackable = cur[7] == "TRUE";
+                //                     c.effectID = int.Parse(cur[8]);
+                // 
+                //                     cons.Add(c);
+                //                 }
+                List<Equ> equs = new List<Equ>();
+                for(int i = 1; i < content.Length; i++)
+                {
+                    string[] cur = content[i];
+                    Equ eq = new Equ();
+                    eq.id = int.Parse(cur[0]);
+                    eq.price_Sell = int.Parse(cur[1]);
+                    eq.price_Buy = int.Parse(cur[2]);
+                    eq.pictureName = cur[3];
+                    eq.nameID = int.Parse(cur[4]);
+                    eq.definitionID = cur[5];
+                    eq.useLvNeed = int.Parse(cur[6]);
+                    eq.info.maxHP = int.Parse(cur[7]);
+                    eq.info.maxMp = int.Parse(cur[8]);
+                    eq.info.damage = int.Parse(cur[9]);
+                    eq.info.hitRate = int.Parse(cur[10]);
+                    eq.info.defence = int.Parse(cur[11]);
+                    eq.info.dodge = int.Parse(cur[12]);
+                    eq.info.speed = int.Parse(cur[13]);
+                    eq.info.crit = int.Parse(cur[14]);
+                    eq.info.bleedingResist = int.Parse(cur[15]);
+                    eq.info.dizzeResist = int.Parse(cur[16]);
+                    eq.info.poisonResist = int.Parse(cur[17]);
 
-                string jsonContent = LitJson.JsonMapper.ToJson(content);
+                    equs.Add(eq);
+                }
+                //string jsonContent = LitJson.JsonMapper.ToJson(content);
+                //string jsonContent = LitJson.JsonMapper.ToJson(cons);
+                string jsonContent = LitJson.JsonMapper.ToJson(equs);
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 SaveToFile(jsonContent);
@@ -201,7 +244,7 @@ namespace ExcelRead
             sw.Write(jsonContent);
             sw.Flush();
             sw.Close();
-            var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);            
+            var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
             if (m == DialogResult.Yes)
             {
                 System.Diagnostics.Process.Start(textBox2.Text);
@@ -212,8 +255,30 @@ namespace ExcelRead
 
     class Con
     {
-        public int effectID, id, price_Sell, price_Buy;
-        public string pictureName, name, definitionID;
+        public int effectID, id, price_Sell, price_Buy, nameID;
+        public string pictureName, definitionID;
         public bool canUseWhenFighting, stackable;
     }
-}
+    class Equ
+    {
+        public int id, price_Sell, price_Buy, nameID, useLvNeed;
+        public string definitionID, pictureName;
+        public BaseProperties info;
+    }
+
+    public struct BaseProperties
+    {
+        public int
+            maxHP,                  //最大HP
+            maxMp,                  //最大MP
+            damage,                 //伤害
+            hitRate,                //命中率
+            defence,                //防御值
+            dodge,                  //躲避率
+            speed,                  //速度
+            crit,                   //暴击率
+            bleedingResist,         //流血抵抗
+            dizzeResist,            //晕眩抵抗
+            poisonResist;           //中毒抵抗         
+    }
+    }

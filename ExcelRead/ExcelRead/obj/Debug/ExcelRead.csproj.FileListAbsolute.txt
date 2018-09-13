@@ -22,3 +22,13 @@ C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.Co
 C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CopyComplete
 C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.exe
 C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Debug\ExcelRead.pdb
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\bin\Debug\ExcelRead.exe.config
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\bin\Debug\ExcelRead.exe
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\bin\Debug\ExcelRead.pdb
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csprojAssemblyReference.cache
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\obj\Debug\ExcelRead.Form1.resources
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\obj\Debug\ExcelRead.Properties.Resources.resources
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.GenerateResource.cache
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CoreCompileInputs.cache
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\obj\Debug\ExcelRead.exe
+D:\Tools\ExcelRead\ExcelRead\ExcelRead\obj\Debug\ExcelRead.pdb
