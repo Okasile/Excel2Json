@@ -12,149 +12,210 @@ namespace ExcelRead
         public Form1()
         {
             InitializeComponent();
+
+            LoadPaths();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        void RememberPaths()
         {
+            PathsConfiguration ps = new PathsConfiguration();
+            ps.excel1 = pathExcel1.Text;
+            ps.excel2 = pathExcel2.Text;
+            ps.saveFile1 = pathFileSave1.Text;
+            ps.saveFile2 = pathFileSave2.Text;
+            ps.removeHead1 = RemoveHeadLine1.Checked;
+            ps.removeHead2 = RemoveHeadLine2.Checked;
+            ps.sheet1 = (int)sheet1.Value;
+            ps.sheet2 = (int)sheet2.Value;
 
-        }
+            string confPath = System.Environment.CurrentDirectory + "Config.txt";
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Multiselect = false;
-            dialog.Title = "选择要打开的Excel";
-            dialog.Filter = "Excel文件|*.xlsx;*.xls;*.xml|所有文件|*.*";
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            using (StreamWriter sw = new StreamWriter(confPath, false))
             {
-                textBox1.Text = dialog.FileName;
+                sw.Write(LitJson.JsonMapper.ToJson(ps));
             }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        void LoadPaths()
         {
 
+            string confPath = System.Environment.CurrentDirectory + "Config.txt";
+            if (!File.Exists(confPath))
+            {
+                return;                
+            }
+
+            string jsonContent = string.Empty;
+            using (StreamReader sr = new StreamReader(confPath))
+            {
+                jsonContent = sr.ReadToEnd();
+            }
+            if (jsonContent != string.Empty)
+            {
+                PathsConfiguration ps = LitJson.JsonMapper.ToObject<PathsConfiguration>(jsonContent);
+                pathExcel1.Text = ps.excel1;
+                pathExcel2.Text = ps.excel2;
+                pathFileSave1.Text = ps.saveFile1;
+                pathFileSave2.Text = ps.saveFile2;
+                RemoveHeadLine1.Checked = ps.removeHead1;
+                RemoveHeadLine2.Checked = ps.removeHead2;
+                sheet1.Value = ps.sheet1;
+                sheet2.Value = ps.sheet2;
+            }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+
+        #region 按钮
+        private void excelPathFindBtn1_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Multiselect = false;
-            dialog.CheckFileExists = false;
-            dialog.Title = "选择要保存";
-            dialog.Filter = "保存的文件|*.txt|所有文件|*.*";
-            dialog.FileName = "Excel2Json.txt";
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                textBox2.Text = dialog.FileName;
-            }
+            ClickBtn2SetPath(pathExcel1, true);
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {            
-            bool isXml;
-            try
+        private void fileSaveFindBtn1_Click(object sender, EventArgs e)
+        {
+            ClickBtn2SetPath(pathFileSave1, false);
+        }
+
+
+        private void excelPathFindBtn2_Click(object sender, EventArgs e)
+        {
+            ClickBtn2SetPath(pathExcel2, true);
+        }
+
+        private void fileSaveFindBtn2_Click(object sender, EventArgs e)
+        {
+            ClickBtn2SetPath(pathFileSave2, false);
+        }
+
+        private void saveBtn_Click(object sender, EventArgs e)
+        {
+            ReadAndSave(pathExcel1.Text, (int)sheet1.Value, pathFileSave1.Text,RemoveHeadLine1.Checked);
+            ReadAndSave(pathExcel2.Text, (int)sheet2.Value, pathFileSave2.Text,RemoveHeadLine2.Checked);
+        }
+
+        #endregion
+
+        void ClickBtn2SetPath(System.Windows.Forms.TextBox setTar, bool isExcel)
+        {
+            if (isExcel)
             {
-                 isXml= textBox1.Text.Substring(textBox1.Text.Length - 3, 3) == "xml";
-            }
-            catch
-            {
-                MessageBox.Show("excel 路径?");
-                return;
-            }
-            string btnRawText = button3.Text;
-            button3.Hide();
-            //xml
-            if (isXml)
-            {
-                try
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Multiselect = false;
+                dialog.Title = "选择要打开的Excel";
+                dialog.Filter = "Excel文件|*.xlsx;*.xls;*.xml|所有文件|*.*";
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    XmlDocument doc = new XmlDocument();
-                    doc.Load(textBox1.Text);
-                    XmlNode root = doc.DocumentElement;
-                    XmlNode tarSheet = null;
-                    List<XmlNode> sheets = new List<XmlNode>();
-                    sheets.Add(null); //从1开始 null 填充0
-                    foreach (XmlNode node in root.ChildNodes)
-                    {
-                        if (node.Name == "Worksheet")
-                        {
-                            sheets.Add(node);
-                        }
-                    }
-                    tarSheet = sheets[(int)numericUpDown1.Value];//Worksheet:table::raw::cell
-                    XmlNode table = null;
-                    foreach (XmlNode node in tarSheet)
-                    {
-                        if (node.Name == "Table")
-                        {
-                            table = node;
-                            break;
-                        }
-                    }
-                    int x = table.ChildNodes.Count;
-                    int y = table.FirstChild.ChildNodes.Count;
-                    string[][] content = new string[x][];
-                    for (int i = 0; i < content.Length; i++)
-                    {                        
-                        content[i] = new string[y];
-                    }
-                    for (int i = 0; i < x; i++)
-                    {
-                        for (int j = 0; j < y; j++)
-                        {
-                            var v = table.ChildNodes[i].ChildNodes[j];
-                            if (v != null)
-                                content[i][j] = v.FirstChild.InnerText;
-                        }
-                    }
-                    //json                    
-                    if (RemoveLine1.Checked)
-                    {
-                        var result = new string[content.Length - 1][];
-                        for(int i=0;i<result.Length;i++)
-                        {
-                            result[i] = content[i + 1];
-                        }
-                        content = result;
-                    }
-                    string s = LitJson.JsonMapper.ToJson(content);
-                    SaveToFile(s);
+                    setTar.Text = dialog.FileName;
                 }
-                catch
-                {
-                    button3.Show();
-                }
-                return;
             }
+            else
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Multiselect = false;
+                dialog.CheckFileExists = false;
+                dialog.Title = "选择要保存";
+                dialog.Filter = "保存的文件|*.txt|所有文件|*.*";
+                dialog.FileName = "Excel2Json.txt";
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    setTar.Text = dialog.FileName;
+                }
+            }
+            RememberPaths();
+        }
 
+        void ReadAndSave(string pathExcel, int sheetPage, string pathSaveFile,bool reamveHead)
+        {
+            string btnRawText = saveBtn.Text;
+            #region xml 不写了
+            //             bool isXml;
+            //             button3.Hide();
+            //             //xml
+            //             if (isXml)
+            //             {
+            //                 try
+            //                 {
+            //                     XmlDocument doc = new XmlDocument();
+            //                     doc.Load(textBox1.Text);
+            //                     XmlNode root = doc.DocumentElement;
+            //                     XmlNode tarSheet = null;
+            //                     List<XmlNode> sheets = new List<XmlNode>();
+            //                     sheets.Add(null); //从1开始 null 填充0
+            //                     foreach (XmlNode node in root.ChildNodes)
+            //                     {
+            //                         if (node.Name == "Worksheet")
+            //                         {
+            //                             sheets.Add(node);
+            //                         }
+            //                     }
+            //                     tarSheet = sheets[(int)numericUpDown1.Value];//Worksheet:table::raw::cell
+            //                     XmlNode table = null;
+            //                     foreach (XmlNode node in tarSheet)
+            //                     {
+            //                         if (node.Name == "Table")
+            //                         {
+            //                             table = node;
+            //                             break;
+            //                         }
+            //                     }
+            //                     int x = table.ChildNodes.Count;
+            //                     int y = table.FirstChild.ChildNodes.Count;
+            //                     string[][] content = new string[x][];
+            //                     for (int i = 0; i < content.Length; i++)
+            //                     {                        
+            //                         content[i] = new string[y];
+            //                     }
+            //                     for (int i = 0; i < x; i++)
+            //                     {
+            //                         for (int j = 0; j < y; j++)
+            //                         {
+            //                             var v = table.ChildNodes[i].ChildNodes[j];
+            //                             if (v != null)
+            //                                 content[i][j] = v.FirstChild.InnerText;
+            //                         }
+            //                     }
+            //                     //json                    
+            //                     if (RemoveLine1.Checked)
+            //                     {
+            //                         var result = new string[content.Length - 1][];
+            //                         for(int i=0;i<result.Length;i++)
+            //                         {
+            //                             result[i] = content[i + 1];
+            //                         }
+            //                         content = result;
+            //                     }
+            //                     string s = LitJson.JsonMapper.ToJson(content);
+            //                     SaveToFile(s);
+            //                 }
+            //                 catch
+            //                 {
+            //                     button3.Show();
+            //                 }
+            //                 return;
+            //             }
+            #endregion
             //xls
 
             Microsoft.Office.Interop.Excel.Application app = null;
 
             //open excel
             app = new Microsoft.Office.Interop.Excel.Application();
-            if (app == null)
-            {
-                MessageBox.Show("转存成xml试试");
-                return;
-            }
             try
             {
                 app.Visible = false;
                 try
                 {
-                    app.Workbooks.Open(textBox1.Text);
+                    app.Workbooks.Open(pathExcel);
                 }
                 catch
                 {
                     MessageBox.Show("大哥,Excel路径是不是错了");
                     app.Quit();
-                    button3.Show();
+                    saveBtn.Show();
                     return;
                 }
                 //read excel
-                _Worksheet ws = app.Sheets[(int)numericUpDown1.Value];
+                _Worksheet ws = app.Sheets[sheetPage];
                 int x = ws.UsedRange.Rows.Count;
                 int y = ws.UsedRange.Columns.Count;
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +235,7 @@ namespace ExcelRead
                 }
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 app.Quit();
-                if (RemoveLine1.Checked)
+                if (reamveHead)
                 {
                     var result = new string[content.Length - 1][];
                     for (int i = 0; i < result.Length; i++)
@@ -182,45 +243,44 @@ namespace ExcelRead
                         result[i] = content[i + 1];
                     }
                     content = result;
-                }                                
+                }
                 string jsonContent = LitJson.JsonMapper.ToJson(content);
-                SaveToFile(jsonContent);
+                SaveToFile(jsonContent, pathSaveFile);
             }
             catch
             {
-                if (app != null)
-                    app.Quit();
-                button3.Show();
+                // if (app != null)
+                app.Quit();
+                saveBtn.Show();
                 MessageBox.Show("Failed");
             }
-            button3.Text = btnRawText;
+            saveBtn.Text = btnRawText;
         }
 
-        void SaveToFile(string jsonContent)
+        void SaveToFile(string jsonContent, string path)
         {
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(textBox2.Text, false);
+                sw = new StreamWriter(path, false);
             }
             catch
             {
                 MessageBox.Show("Save path error!");
                 if (sw != null)
                     sw.Close();
-                button3.Show();
+                saveBtn.Show();
                 return;
             }
             sw.Write(jsonContent);
             sw.Flush();
             sw.Close();
-            var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);            
-            if (m == DialogResult.Yes)
-            {
-                System.Diagnostics.Process.Start(textBox2.Text);
-            }
-            button3.Show();
+//             var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
+//             if (m == DialogResult.Yes)
+//             {
+//                 System.Diagnostics.Process.Start(pathFileSave1.Text);
+//             }
+            saveBtn.Show();
         }
-
     }
 }
