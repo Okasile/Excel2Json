@@ -37,6 +37,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
+            this.RemoveLine1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -125,11 +126,22 @@
             this.label3.TabIndex = 8;
             this.label3.Text = "Sheet Index :";
             // 
+            // RemoveLine1
+            // 
+            this.RemoveLine1.AutoSize = true;
+            this.RemoveLine1.Location = new System.Drawing.Point(461, 106);
+            this.RemoveLine1.Name = "RemoveLine1";
+            this.RemoveLine1.Size = new System.Drawing.Size(84, 16);
+            this.RemoveLine1.TabIndex = 9;
+            this.RemoveLine1.Text = "去掉第一行";
+            this.RemoveLine1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(679, 340);
+            this.Controls.Add(this.RemoveLine1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.button3);
@@ -158,6 +170,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox RemoveLine1;
     }
 }
 

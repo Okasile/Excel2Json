@@ -96,7 +96,7 @@ namespace ExcelRead
                     int y = table.FirstChild.ChildNodes.Count;
                     string[][] content = new string[x][];
                     for (int i = 0; i < content.Length; i++)
-                    {
+                    {                        
                         content[i] = new string[y];
                     }
                     for (int i = 0; i < x; i++)
@@ -108,7 +108,16 @@ namespace ExcelRead
                                 content[i][j] = v.FirstChild.InnerText;
                         }
                     }
-                    //json
+                    //json                    
+                    if (RemoveLine1.Checked)
+                    {
+                        var result = new string[content.Length - 1][];
+                        for(int i=0;i<result.Length;i++)
+                        {
+                            result[i] = content[i + 1];
+                        }
+                        content = result;
+                    }
                     string s = LitJson.JsonMapper.ToJson(content);
                     SaveToFile(s);
                 }
@@ -165,6 +174,15 @@ namespace ExcelRead
                 }
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 app.Quit();
+                if (RemoveLine1.Checked)
+                {
+                    var result = new string[content.Length - 1][];
+                    for (int i = 0; i < result.Length; i++)
+                    {
+                        result[i] = content[i + 1];
+                    }
+                    content = result;
+                }                                
                 string jsonContent = LitJson.JsonMapper.ToJson(content);
                 SaveToFile(jsonContent);
             }
