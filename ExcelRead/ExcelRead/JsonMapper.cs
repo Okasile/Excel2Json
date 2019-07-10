@@ -849,7 +849,6 @@ namespace LitJson
         {
             lock (static_writer_lock) {
                 static_writer.Reset ();
-
                 WriteValue (obj, static_writer, true, 0);
 
                 return static_writer.ToString ();

@@ -124,6 +124,7 @@
             0,
             0,
             0});
+            this.sheet1.ValueChanged += new System.EventHandler(this.sheet1_ValueChanged);
             // 
             // label3
             // 
@@ -134,21 +135,21 @@
             this.label3.TabIndex = 8;
             this.label3.Text = "Sheet Index :";
             // 
-            // Remove1stLine1
+            // RemoveHeadLine1
             // 
             this.RemoveHeadLine1.AutoSize = true;
             this.RemoveHeadLine1.Location = new System.Drawing.Point(272, 60);
-            this.RemoveHeadLine1.Name = "Remove1stLine1";
+            this.RemoveHeadLine1.Name = "RemoveHeadLine1";
             this.RemoveHeadLine1.Size = new System.Drawing.Size(84, 16);
             this.RemoveHeadLine1.TabIndex = 9;
             this.RemoveHeadLine1.Text = "去掉第一行";
             this.RemoveHeadLine1.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // RemoveHeadLine2
             // 
             this.RemoveHeadLine2.AutoSize = true;
             this.RemoveHeadLine2.Location = new System.Drawing.Point(274, 262);
-            this.RemoveHeadLine2.Name = "checkBox1";
+            this.RemoveHeadLine2.Name = "RemoveHeadLine2";
             this.RemoveHeadLine2.Size = new System.Drawing.Size(84, 16);
             this.RemoveHeadLine2.TabIndex = 18;
             this.RemoveHeadLine2.Text = "去掉第一行";
@@ -174,6 +175,7 @@
             0,
             0,
             0});
+            this.sheet2.ValueChanged += new System.EventHandler(this.sheet2_ValueChanged);
             // 
             // fileSaveFindBtn2
             // 

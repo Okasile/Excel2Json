@@ -8,3 +8,13 @@ C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.csproj.
 C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.csproj.CoreCompileInputs.cache
 C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.exe
 C:\Users\Administrator\Desktop\ExcelRead\ExcelRead\obj\Release\ExcelRead.pdb
+D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.csprojAssemblyReference.cache
+D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.Form1.resources
+D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.Properties.Resources.resources
+D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.csproj.GenerateResource.cache
+D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.csproj.CoreCompileInputs.cache
+D:\excel2json\ExcelRead\ExcelRead\bin\Release\ExcelRead.exe.config
+D:\excel2json\ExcelRead\ExcelRead\bin\Release\ExcelRead.exe
+D:\excel2json\ExcelRead\ExcelRead\bin\Release\ExcelRead.pdb
+D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.exe
+D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.pdb

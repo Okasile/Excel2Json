@@ -1,9 +1,9 @@
-﻿using Microsoft.Office.Interop.Excel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using ExcelDataReader;
 
 namespace ExcelRead
 {
@@ -42,7 +42,7 @@ namespace ExcelRead
             string confPath = System.Environment.CurrentDirectory + "Config.txt";
             if (!File.Exists(confPath))
             {
-                return;                
+                return;
             }
 
             string jsonContent = string.Empty;
@@ -87,11 +87,24 @@ namespace ExcelRead
             ClickBtn2SetPath(pathFileSave2, false);
         }
 
+
+        private void sheet2_ValueChanged(object sender, EventArgs e)
+        {
+            RememberPaths();
+        }
+
+        private void sheet1_ValueChanged(object sender, EventArgs e)
+        {
+            RememberPaths();
+        }
+
         private void saveBtn_Click(object sender, EventArgs e)
         {
-            ReadAndSave(pathExcel1.Text, (int)sheet1.Value, pathFileSave1.Text,RemoveHeadLine1.Checked);
-            ReadAndSave(pathExcel2.Text, (int)sheet2.Value, pathFileSave2.Text,RemoveHeadLine2.Checked);
+            ReadAndSave(pathExcel1.Text, (int)sheet1.Value, pathFileSave1.Text, RemoveHeadLine1.Checked);
+            ReadAndSave(pathExcel2.Text, (int)sheet2.Value, pathFileSave2.Text, RemoveHeadLine2.Checked);
+            MessageBox.Show("完成");
         }
+
 
         #endregion
 
@@ -124,7 +137,7 @@ namespace ExcelRead
             RememberPaths();
         }
 
-        void ReadAndSave(string pathExcel, int sheetPage, string pathSaveFile,bool reamveHead)
+        void ReadAndSave(string pathExcel, int sheetPage, string pathSaveFile, bool reamoveHead)
         {
             string btnRawText = saveBtn.Text;
             #region xml 不写了
@@ -196,65 +209,107 @@ namespace ExcelRead
             #endregion
             //xls
 
-            Microsoft.Office.Interop.Excel.Application app = null;
+            if (!File.Exists(pathExcel))
+                return;
 
-            //open excel
-            app = new Microsoft.Office.Interop.Excel.Application();
-            try
+            saveBtn.Hide();
+            using (FileStream fs = File.Open(pathExcel, FileMode.Open, FileAccess.Read))
             {
-                app.Visible = false;
-                try
+                using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(fs))
                 {
-                    app.Workbooks.Open(pathExcel);
-                }
-                catch
-                {
-                    MessageBox.Show("大哥,Excel路径是不是错了");
-                    app.Quit();
-                    saveBtn.Show();
-                    return;
-                }
-                //read excel
-                _Worksheet ws = app.Sheets[sheetPage];
-                int x = ws.UsedRange.Rows.Count;
-                int y = ws.UsedRange.Columns.Count;
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                string[][] content = new string[x][];
-                for (int i = 0; i < x; i++)
-                {
-                    content[i] = new string[y];
-                }
-                for (int i = 0; i < x; i++)
-                {
-                    for (int j = 0; j < y; j++)
+                    var result = reader.AsDataSet();
+                    var table = result.Tables[sheetPage - 1];
+
+                    List<List<object>> datas = new List<List<object>>();
+                    if (table.Rows.Count <= 0 || table.Rows.Count <= 1 && reamoveHead)
+                        return;
+                    for (int i = reamoveHead? 1:0; i < table.Rows.Count; i++)
                     {
-                        var v = ws.Cells[i + 1, j + 1];
-                        if (v != null)
-                            content[i][j] = ((Range)v).Text;
+                        List<object> temp = new List<object>();
+                        for(int c = 0;c<table.Columns.Count;c++)
+                        {
+                            var v = table.Rows[i][c];
+                            if(v is double)
+                            {
+                                v =Convert.ToSingle(v);
+                                if((Convert.ToInt32(v)) == Convert.ToSingle(v))
+                                {
+                                    v = Convert.ToInt32(v);
+                                }
+                            }                            
+                            if (v == DBNull.Value)
+                                v = string.Empty;
+                            temp.Add(v);
+                        }
+                        datas.Add(temp);
                     }
+                    string jsonContent = LitJson.JsonMapper.ToJson(datas);
+                    SaveToFile(jsonContent, pathSaveFile);
                 }
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                app.Quit();
-                if (reamveHead)
-                {
-                    var result = new string[content.Length - 1][];
-                    for (int i = 0; i < result.Length; i++)
-                    {
-                        result[i] = content[i + 1];
-                    }
-                    content = result;
-                }
-                string jsonContent = LitJson.JsonMapper.ToJson(content);
-                SaveToFile(jsonContent, pathSaveFile);
             }
-            catch
-            {
-                // if (app != null)
-                app.Quit();
-                saveBtn.Show();
-                MessageBox.Show("Failed");
-            }
-            saveBtn.Text = btnRawText;
+            saveBtn.Show();
+
+            #region 用的Microsoft.Office.Interop.Excel.Application,已经废弃
+            //             Microsoft.Office.Interop.Excel.Application app = null;
+            // 
+            //             //open excel
+            //             app = new Microsoft.Office.Interop.Excel.Application();
+            //             try
+            //             {
+            //                 app.Visible = false;
+            //                 try
+            //                 {
+            //                     app.Workbooks.Open(pathExcel);
+            //                 }
+            //                 catch
+            //                 {
+            //                     MessageBox.Show("大哥,Excel路径是不是错了");
+            //                     app.Quit();
+            //                     saveBtn.Show();
+            //                     return;
+            //                 }
+            //                 //read excel
+            //                 _Worksheet ws = app.Sheets[sheetPage];
+            //                 int x = ws.UsedRange.Rows.Count;
+            //                 int y = ws.UsedRange.Columns.Count;
+            //                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //                 string[][] content = new string[x][];
+            //                 for (int i = 0; i < x; i++)
+            //                 {
+            //                     content[i] = new string[y];
+            //                 }
+            //                 for (int i = 0; i < x; i++)
+            //                 {
+            //                     for (int j = 0; j < y; j++)
+            //                     {
+            //                         var v = ws.Cells[i + 1, j + 1];
+            //                         if (v != null)
+            //                             content[i][j] = ((Range)v).Text;
+            //                     }
+            //                 }
+            //                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //                 app.Quit();
+            //                 if (reamveHead)
+            //                 {
+            //                     var result = new string[content.Length - 1][];
+            //                     for (int i = 0; i < result.Length; i++)
+            //                     {
+            //                         result[i] = content[i + 1];
+            //                     }
+            //                     content = result;
+            //                 }
+            //                 string jsonContent = LitJson.JsonMapper.ToJson(content);
+            //                 SaveToFile(jsonContent, pathSaveFile);
+            //             }
+            //             catch
+            //             {
+            //                 // if (app != null)
+            //                 app.Quit();
+            //                 saveBtn.Show();
+            //                 MessageBox.Show("Failed");
+            //             }
+            //             saveBtn.Text = btnRawText;
+            #endregion
         }
 
         void SaveToFile(string jsonContent, string path)
@@ -275,11 +330,11 @@ namespace ExcelRead
             sw.Write(jsonContent);
             sw.Flush();
             sw.Close();
-//             var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
-//             if (m == DialogResult.Yes)
-//             {
-//                 System.Diagnostics.Process.Start(pathFileSave1.Text);
-//             }
+            //             var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
+            //             if (m == DialogResult.Yes)
+            //             {
+            //                 System.Diagnostics.Process.Start(pathFileSave1.Text);
+            //             }
             saveBtn.Show();
         }
     }

@@ -33,13 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,6 +48,135 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExcelDataReader.DataSet\ExcelDataReaderExtensions.cs" />
+    <Compile Include="ExcelDataReader.DataSet\ExcelDataSetConfiguration.cs" />
+    <Compile Include="ExcelDataReader.DataSet\ExcelDataTableConfiguration.cs" />
+    <Compile Include="ExcelDataReader.DataSet\Portable\ExtensionAttribute.cs" />
+    <Compile Include="ExcelDataReader.DataSet\Portable\Func.cs" />
+    <Compile Include="ExcelDataReader\AssemblyInfo.cs" />
+    <Compile Include="ExcelDataReader\CellRange.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\Enums.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\IXlsString.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffBlankCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffBOF.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffBoundSheet.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffCodeName.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffColInfo.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffContinue.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffDbCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffDefaultRowHeight.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffDimensions.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffEOF.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffFilePass.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffFormatString.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffFormulaCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffFormulaString.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffHeaderFooterString.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffIndex.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffIntegerCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffInterfaceHdr.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffLabelCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffLabelSSTCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffMergeCells.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffMSODrawing.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffMulBlankCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffMulRKCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffNumberCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffQuickTip.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffRecord.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffRKCell.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffRow.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffSimpleValueRecord.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffSST.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffStream.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffUncalced.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffWindow1.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsBiffXF.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsByteString.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsInternalString.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsShortByteString.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsShortUnicodeString.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsSSTReader.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsSSTStringHeader.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsUnicodeString.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsWorkbook.cs" />
+    <Compile Include="ExcelDataReader\Core\BinaryFormat\XlsWorksheet.cs" />
+    <Compile Include="ExcelDataReader\Core\BuiltinNumberFormat.cs" />
+    <Compile Include="ExcelDataReader\Core\Cell.cs" />
+    <Compile Include="ExcelDataReader\Core\Col.cs" />
+    <Compile Include="ExcelDataReader\Core\CommonWorkbook.cs" />
+    <Compile Include="ExcelDataReader\Core\CompoundFormat\CompoundDirectoryEntry.cs" />
+    <Compile Include="ExcelDataReader\Core\CompoundFormat\CompoundDocument.cs" />
+    <Compile Include="ExcelDataReader\Core\CompoundFormat\CompoundEnums.cs" />
+    <Compile Include="ExcelDataReader\Core\CompoundFormat\CompoundHeader.cs" />
+    <Compile Include="ExcelDataReader\Core\CompoundFormat\CompoundStream.cs" />
+    <Compile Include="ExcelDataReader\Core\CsvFormat\CsvAnalyzer.cs" />
+    <Compile Include="ExcelDataReader\Core\CsvFormat\CsvParser.cs" />
+    <Compile Include="ExcelDataReader\Core\CsvFormat\CsvWorkbook.cs" />
+    <Compile Include="ExcelDataReader\Core\CsvFormat\CsvWorksheet.cs" />
+    <Compile Include="ExcelDataReader\Core\EncodingHelper.cs" />
+    <Compile Include="ExcelDataReader\Core\Helpers.cs" />
+    <Compile Include="ExcelDataReader\Core\IWorkbook.cs" />
+    <Compile Include="ExcelDataReader\Core\IWorksheet.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\Color.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\Condition.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\DecimalSection.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\ExponentialSection.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\FractionSection.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\NumberFormatString.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\Parser.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\Section.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\SectionType.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\Token.cs" />
+    <Compile Include="ExcelDataReader\Core\NumberFormat\Tokenizer.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\AgileEncryptedPackageStream.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\AgileEncryption.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\CryptoHelpers.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\EncryptionInfo.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\Enums.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\RC4Encryption.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\RC4Managed.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\StandardEncryptedPackageStream.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\StandardEncryption.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\XorEncryption.cs" />
+    <Compile Include="ExcelDataReader\Core\OfficeCrypto\XorManaged.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxBoundSheet.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxCols.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxDimension.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxElement.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxElementType.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxHeaderFooter.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxMergeCells.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxRow.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxSST.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxWorkbook.cs" />
+    <Compile Include="ExcelDataReader\Core\OpenXmlFormat\XlsxWorksheet.cs" />
+    <Compile Include="ExcelDataReader\Core\ReferenceHelper.cs" />
+    <Compile Include="ExcelDataReader\Core\Row.cs" />
+    <Compile Include="ExcelDataReader\Core\StringHelper.cs" />
+    <Compile Include="ExcelDataReader\Core\XmlReaderHelper.cs" />
+    <Compile Include="ExcelDataReader\Core\ZipWorker.cs" />
+    <Compile Include="ExcelDataReader\Errors.cs" />
+    <Compile Include="ExcelDataReader\ExcelBinaryReader.cs" />
+    <Compile Include="ExcelDataReader\ExcelCsvReader.cs" />
+    <Compile Include="ExcelDataReader\ExcelDataReader.cs" />
+    <Compile Include="ExcelDataReader\ExcelOpenXmlReader.cs" />
+    <Compile Include="ExcelDataReader\ExcelReaderConfiguration.cs" />
+    <Compile Include="ExcelDataReader\ExcelReaderFactory.cs" />
+    <Compile Include="ExcelDataReader\Exceptions\CompoundDocumentException.cs" />
+    <Compile Include="ExcelDataReader\Exceptions\ExcelReaderException.cs" />
+    <Compile Include="ExcelDataReader\Exceptions\HeaderException.cs" />
+    <Compile Include="ExcelDataReader\Exceptions\InvalidPasswordException.cs" />
+    <Compile Include="ExcelDataReader\HeaderFooter.cs" />
+    <Compile Include="ExcelDataReader\IExcelDataReader.cs" />
+    <Compile Include="ExcelDataReader\Log\ILog.cs" />
+    <Compile Include="ExcelDataReader\Log\Log.cs" />
+    <Compile Include="ExcelDataReader\Log\Logger\NullLogFactory.cs" />
+    <Compile Include="ExcelDataReader\Log\LogManager.cs" />
+    <Compile Include="ExcelDataReader\Misc\DateTimeHelper.cs" />
+    <Compile Include="ExcelDataReader\Misc\LeaveOpenStream.cs" />
+    <Compile Include="ExcelDataReader\Portable\ZipArchive.cs" />
+    <Compile Include="ExcelDataReader\Portable\ZipArchiveEntry.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +193,7 @@
     <Compile Include="Lexer.cs" />
     <Compile Include="Netstandard15Polyfill.cs" />
     <Compile Include="ParserToken.cs" />
+    <Compile Include="PathsConfiguration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -81,7 +208,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -94,6 +220,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
