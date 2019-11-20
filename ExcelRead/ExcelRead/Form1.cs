@@ -19,14 +19,10 @@ namespace ExcelRead
         void RememberPaths()
         {
             PathsConfiguration ps = new PathsConfiguration();
-            ps.excel1 = pathExcel1.Text;
-            ps.excel2 = pathExcel2.Text;
-            ps.saveFile1 = pathFileSave1.Text;
-            ps.saveFile2 = pathFileSave2.Text;
-            ps.removeHead1 = RemoveHeadLine1.Checked;
-            ps.removeHead2 = RemoveHeadLine2.Checked;
-            ps.sheet1 = (int)sheet1.Value;
-            ps.sheet2 = (int)sheet2.Value;
+            ps.excel = pathExcel1.Text;
+            ps.saveFile = pathFileSave1.Text;
+            ps.isRemoveHead = RemoveHeadLine1.Checked;
+            ps.sheets = (int)sheet1.Value;
 
             string confPath = System.Environment.CurrentDirectory + "Config.txt";
 
@@ -53,14 +49,10 @@ namespace ExcelRead
             if (jsonContent != string.Empty)
             {
                 PathsConfiguration ps = LitJson.JsonMapper.ToObject<PathsConfiguration>(jsonContent);
-                pathExcel1.Text = ps.excel1;
-                pathExcel2.Text = ps.excel2;
-                pathFileSave1.Text = ps.saveFile1;
-                pathFileSave2.Text = ps.saveFile2;
-                RemoveHeadLine1.Checked = ps.removeHead1;
-                RemoveHeadLine2.Checked = ps.removeHead2;
-                sheet1.Value = ps.sheet1;
-                sheet2.Value = ps.sheet2;
+                pathExcel1.Text = ps.excel;
+                pathFileSave1.Text = ps.saveFile;
+                RemoveHeadLine1.Checked = ps.isRemoveHead;
+                sheet1.Value = ps.sheets;
             }
         }
 
@@ -77,22 +69,6 @@ namespace ExcelRead
         }
 
 
-        private void excelPathFindBtn2_Click(object sender, EventArgs e)
-        {
-            ClickBtn2SetPath(pathExcel2, true);
-        }
-
-        private void fileSaveFindBtn2_Click(object sender, EventArgs e)
-        {
-            ClickBtn2SetPath(pathFileSave2, false);
-        }
-
-
-        private void sheet2_ValueChanged(object sender, EventArgs e)
-        {
-            RememberPaths();
-        }
-
         private void sheet1_ValueChanged(object sender, EventArgs e)
         {
             RememberPaths();
@@ -101,7 +77,6 @@ namespace ExcelRead
         private void saveBtn_Click(object sender, EventArgs e)
         {
             ReadAndSave(pathExcel1.Text, (int)sheet1.Value, pathFileSave1.Text, RemoveHeadLine1.Checked);
-            ReadAndSave(pathExcel2.Text, (int)sheet2.Value, pathFileSave2.Text, RemoveHeadLine2.Checked);
             MessageBox.Show("完成");
         }
 
@@ -218,33 +193,70 @@ namespace ExcelRead
                 using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(fs))
                 {
                     var result = reader.AsDataSet();
-                    var table = result.Tables[sheetPage - 1];
-
-                    List<List<object>> datas = new List<List<object>>();
-                    if (table.Rows.Count <= 0 || table.Rows.Count <= 1 && reamoveHead)
-                        return;
-                    for (int i = reamoveHead? 1:0; i < table.Rows.Count; i++)
+                    int _sheetPage = sheetPage - 1;
+                    if(_sheetPage>=0 && _sheetPage < result.Tables.Count)
                     {
-                        List<object> temp = new List<object>();
-                        for(int c = 0;c<table.Columns.Count;c++)
+                        var table = result.Tables[_sheetPage];
+                        List<List<object>> datas = new List<List<object>>();
+                        if (table.Rows.Count <= 0 || table.Rows.Count <= 1 && reamoveHead)
+                            return;
+                        for (int i = reamoveHead ? 1 : 0; i < table.Rows.Count; i++)
                         {
-                            var v = table.Rows[i][c];
-                            if(v is double)
+                            List<object> temp = new List<object>();
+                            for (int c = 0; c < table.Columns.Count; c++)
                             {
-                                v =Convert.ToSingle(v);
-                                if((Convert.ToInt32(v)) == Convert.ToSingle(v))
+                                var v = table.Rows[i][c];
+                                if (v is double)
                                 {
-                                    v = Convert.ToInt32(v);
+                                    //v =Convert.ToSingle(v);
+                                    if ((Convert.ToInt32(v)) == Convert.ToSingle(v))
+                                    {
+                                        v = Convert.ToInt32(v);
+                                    }
                                 }
-                            }                            
-                            if (v == DBNull.Value)
-                                v = string.Empty;
-                            temp.Add(v);
+                                if (v == DBNull.Value)
+                                    v = string.Empty;
+                                temp.Add(v);
+                            }
+                            datas.Add(temp);
                         }
-                        datas.Add(temp);
+                        string jsonContent = LitJson.JsonMapper.ToJson(datas);
+                        SaveToFile(jsonContent, pathSaveFile);
                     }
-                    string jsonContent = LitJson.JsonMapper.ToJson(datas);
-                    SaveToFile(jsonContent, pathSaveFile);
+                    else
+                    {
+                        Dictionary<string, List<List<object>>> content = new Dictionary<string, List<List<object>>>();
+                        for(int _sheetIndex=0; _sheetIndex < result.Tables.Count; _sheetIndex++)
+                        {
+                            var table = result.Tables[_sheetIndex];
+                            List<List<object>> datas = new List<List<object>>();
+                            if (table.Rows.Count <= 0 || table.Rows.Count <= 1 && reamoveHead)
+                                return;
+                            for (int i = reamoveHead ? 1 : 0; i < table.Rows.Count; i++)
+                            {
+                                List<object> temp = new List<object>();
+                                for (int c = 0; c < table.Columns.Count; c++)
+                                {
+                                    var v = table.Rows[i][c];
+                                    if (v is double)
+                                    {
+                                        //v =Convert.ToSingle(v);
+                                        if ((Convert.ToInt32(v)) == Convert.ToSingle(v))
+                                        {
+                                            v = Convert.ToInt32(v);
+                                        }
+                                    }
+                                    if (v == DBNull.Value)
+                                        v = string.Empty;
+                                    temp.Add(v);
+                                }
+                                datas.Add(temp);
+                            }
+                            content.Add("sheet"+ _sheetIndex, datas);
+                        }
+                        string jsonContent = LitJson.JsonMapper.ToJson(content);
+                        SaveToFile(jsonContent, pathSaveFile);
+                    }
                 }
             }
             saveBtn.Show();
