@@ -38,6 +38,14 @@
             this.sheet1 = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.RemoveHeadLine1 = new System.Windows.Forms.CheckBox();
+            this.isUseCompress = new System.Windows.Forms.CheckBox();
+            this.unCompressBtn = new System.Windows.Forms.Button();
+            this.unCompressSrcPath = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.SaveUncompressBtn = new System.Windows.Forms.Button();
+            this.unCompressSaveBtn = new System.Windows.Forms.Button();
+            this.unCompressSavePath = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.sheet1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -95,7 +103,7 @@
             // 
             // saveBtn
             // 
-            this.saveBtn.Location = new System.Drawing.Point(257, 439);
+            this.saveBtn.Location = new System.Drawing.Point(232, 177);
             this.saveBtn.Name = "saveBtn";
             this.saveBtn.Size = new System.Drawing.Size(143, 47);
             this.saveBtn.TabIndex = 6;
@@ -106,11 +114,6 @@
             // sheet1
             // 
             this.sheet1.Location = new System.Drawing.Point(461, 60);
-            this.sheet1.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
             this.sheet1.Name = "sheet1";
             this.sheet1.Size = new System.Drawing.Size(120, 21);
             this.sheet1.TabIndex = 7;
@@ -140,11 +143,94 @@
             this.RemoveHeadLine1.Text = "去掉第一行";
             this.RemoveHeadLine1.UseVisualStyleBackColor = true;
             // 
+            // isUseCompress
+            // 
+            this.isUseCompress.AutoSize = true;
+            this.isUseCompress.Location = new System.Drawing.Point(401, 193);
+            this.isUseCompress.Name = "isUseCompress";
+            this.isUseCompress.Size = new System.Drawing.Size(72, 16);
+            this.isUseCompress.TabIndex = 10;
+            this.isUseCompress.Text = "是否压缩";
+            this.isUseCompress.UseVisualStyleBackColor = true;
+            this.isUseCompress.CheckedChanged += new System.EventHandler(this.isUseCompress_CheckedChanged);
+            // 
+            // unCompressBtn
+            // 
+            this.unCompressBtn.Location = new System.Drawing.Point(613, 277);
+            this.unCompressBtn.Name = "unCompressBtn";
+            this.unCompressBtn.Size = new System.Drawing.Size(54, 35);
+            this.unCompressBtn.TabIndex = 13;
+            this.unCompressBtn.Text = "浏览";
+            this.unCompressBtn.UseVisualStyleBackColor = true;
+            this.unCompressBtn.Click += new System.EventHandler(this.unCompressBtn_Click);
+            // 
+            // unCompressSrcPath
+            // 
+            this.unCompressSrcPath.Location = new System.Drawing.Point(12, 283);
+            this.unCompressSrcPath.Name = "unCompressSrcPath";
+            this.unCompressSrcPath.Size = new System.Drawing.Size(583, 21);
+            this.unCompressSrcPath.TabIndex = 12;
+            this.unCompressSrcPath.TextChanged += new System.EventHandler(this.unCompressSrcPath_TextChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(10, 257);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(53, 12);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "解压目录";
+            // 
+            // SaveUncompressBtn
+            // 
+            this.SaveUncompressBtn.Location = new System.Drawing.Point(232, 431);
+            this.SaveUncompressBtn.Name = "SaveUncompressBtn";
+            this.SaveUncompressBtn.Size = new System.Drawing.Size(143, 47);
+            this.SaveUncompressBtn.TabIndex = 14;
+            this.SaveUncompressBtn.Text = "点击转换";
+            this.SaveUncompressBtn.UseVisualStyleBackColor = true;
+            this.SaveUncompressBtn.Click += new System.EventHandler(this.SaveUncompressBtn_Click);
+            // 
+            // unCompressSaveBtn
+            // 
+            this.unCompressSaveBtn.Location = new System.Drawing.Point(613, 359);
+            this.unCompressSaveBtn.Name = "unCompressSaveBtn";
+            this.unCompressSaveBtn.Size = new System.Drawing.Size(54, 35);
+            this.unCompressSaveBtn.TabIndex = 17;
+            this.unCompressSaveBtn.Text = "浏览";
+            this.unCompressSaveBtn.UseVisualStyleBackColor = true;
+            this.unCompressSaveBtn.Click += new System.EventHandler(this.unCompressSaveBtn_Click);
+            // 
+            // unCompressSavePath
+            // 
+            this.unCompressSavePath.Location = new System.Drawing.Point(12, 365);
+            this.unCompressSavePath.Name = "unCompressSavePath";
+            this.unCompressSavePath.Size = new System.Drawing.Size(583, 21);
+            this.unCompressSavePath.TabIndex = 16;
+            this.unCompressSavePath.TextChanged += new System.EventHandler(this.unCompressSavePath_TextChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 339);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(53, 12);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "保存目录";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(748, 563);
+            this.Controls.Add(this.unCompressSaveBtn);
+            this.Controls.Add(this.unCompressSavePath);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.SaveUncompressBtn);
+            this.Controls.Add(this.unCompressBtn);
+            this.Controls.Add(this.unCompressSrcPath);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.isUseCompress);
             this.Controls.Add(this.RemoveHeadLine1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.sheet1);
@@ -175,6 +261,14 @@
         private System.Windows.Forms.NumericUpDown sheet1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox RemoveHeadLine1;
+        private System.Windows.Forms.CheckBox isUseCompress;
+        private System.Windows.Forms.Button unCompressBtn;
+        private System.Windows.Forms.TextBox unCompressSrcPath;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button SaveUncompressBtn;
+        private System.Windows.Forms.Button unCompressSaveBtn;
+        private System.Windows.Forms.TextBox unCompressSavePath;
+        private System.Windows.Forms.Label label5;
     }
 }
 

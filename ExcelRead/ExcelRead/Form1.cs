@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using ExcelDataReader;
@@ -23,6 +24,9 @@ namespace ExcelRead
             ps.saveFile = pathFileSave1.Text;
             ps.isRemoveHead = RemoveHeadLine1.Checked;
             ps.sheets = (int)sheet1.Value;
+            ps.isCompress = isUseCompress.Checked;
+            ps.unCompressSrcPath = unCompressSrcPath.Text;
+            ps.unCompressSavePath = unCompressSavePath.Text;
 
             string confPath = System.Environment.CurrentDirectory + "Config.txt";
 
@@ -52,7 +56,10 @@ namespace ExcelRead
                 pathExcel1.Text = ps.excel;
                 pathFileSave1.Text = ps.saveFile;
                 RemoveHeadLine1.Checked = ps.isRemoveHead;
-                sheet1.Value = ps.sheets;
+                sheet1.Value =ps.sheets >=sheet1.Minimum &&ps.sheets<= sheet1.Maximum? ps.sheets : 0;
+                isUseCompress.Checked = ps.isCompress;
+                unCompressSrcPath.Text = ps.unCompressSrcPath;
+                unCompressSavePath.Text = ps.unCompressSavePath;
             }
         }
 
@@ -74,12 +81,43 @@ namespace ExcelRead
             RememberPaths();
         }
 
+
+        private void unCompressSrcPath_TextChanged(object sender, EventArgs e)
+        {
+            RememberPaths();
+        }
+
+        private void unCompressSavePath_TextChanged(object sender, EventArgs e)
+        {
+            RememberPaths();
+        }
+
         private void saveBtn_Click(object sender, EventArgs e)
         {
             ReadAndSave(pathExcel1.Text, (int)sheet1.Value, pathFileSave1.Text, RemoveHeadLine1.Checked);
             MessageBox.Show("完成");
         }
 
+        private void isUseCompress_CheckedChanged(object sender, EventArgs e)
+        {
+            RememberPaths();
+        }
+
+        private void unCompressBtn_Click(object sender, EventArgs e)
+        {
+            ClickBtn2SetPath(unCompressSrcPath, false);
+        }
+
+        private void unCompressSaveBtn_Click(object sender, EventArgs e)
+        {
+            ClickBtn2SetPath(unCompressSavePath, false);
+        }
+
+        private void SaveUncompressBtn_Click(object sender, EventArgs e)
+        {
+            ReadAndSave_UnCompress(unCompressSrcPath.Text, unCompressSavePath.Text);
+            MessageBox.Show("完成");
+        }
 
         #endregion
 
@@ -188,7 +226,7 @@ namespace ExcelRead
                 return;
 
             saveBtn.Hide();
-            using (FileStream fs = File.Open(pathExcel, FileMode.Open, FileAccess.Read))
+            using (FileStream fs = File.Open(pathExcel, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(fs))
                 {
@@ -221,6 +259,22 @@ namespace ExcelRead
                             datas.Add(temp);
                         }
                         string jsonContent = LitJson.JsonMapper.ToJson(datas);
+
+                        if (isUseCompress.Checked && jsonContent != null)
+                        {
+                            try
+                            {
+                                byte[] jsonB = Encoding.UTF8.GetBytes(jsonContent);
+                                byte[] _result = ZipHelper.GZipCompress(jsonB);
+                                SaveToFile(_result, pathSaveFile);
+                                return;
+                            }
+                            catch
+                            {
+                                MessageBox.Show("压缩失败");
+                            }
+                        }
+
                         SaveToFile(jsonContent, pathSaveFile);
                     }
                     else
@@ -255,6 +309,22 @@ namespace ExcelRead
                             content.Add("sheet"+ _sheetIndex, datas);
                         }
                         string jsonContent = LitJson.JsonMapper.ToJson(content);
+
+                        if (isUseCompress.Checked && jsonContent!=null)
+                        {
+                            try
+                            {
+                                byte[] jsonB = Encoding.UTF8.GetBytes(jsonContent);
+                                byte[] _result = ZipHelper.GZipCompress(jsonB);
+                                SaveToFile(_result, pathSaveFile);
+                                return;
+                            }
+                            catch
+                            {
+                                MessageBox.Show("压缩失败");
+                            }
+                        }
+
                         SaveToFile(jsonContent, pathSaveFile);
                     }
                 }
@@ -324,6 +394,25 @@ namespace ExcelRead
             #endregion
         }
 
+        void ReadAndSave_UnCompress(string pathCompressFile,string pathToSave)
+        {
+            try
+            {
+                FileStream srcFs = new FileStream(pathCompressFile, FileMode.OpenOrCreate);
+                byte[] _compressedBytes = new byte[srcFs.Length];
+                srcFs.Read(_compressedBytes, 0, _compressedBytes.Length);
+                srcFs.Close();
+                string unCompressErr;
+                byte[] _readResult = ZipHelper.GZipDecompress(_compressedBytes, out unCompressErr);
+                SaveToFile(_readResult, pathToSave);
+            }
+            catch
+            {
+                MessageBox.Show("UnCompress err");
+            }
+        }
+
+
         void SaveToFile(string jsonContent, string path)
         {
             StreamWriter sw = null;
@@ -342,12 +431,38 @@ namespace ExcelRead
             sw.Write(jsonContent);
             sw.Flush();
             sw.Close();
+            saveBtn.Show();
             //             var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
             //             if (m == DialogResult.Yes)
             //             {
             //                 System.Diagnostics.Process.Start(pathFileSave1.Text);
             //             }
-            saveBtn.Show();
         }
+        void SaveToFile(byte[] jsonContent, string path)
+        {
+            FileStream fs = null;
+            try
+            {
+                fs = new FileStream(path,FileMode.OpenOrCreate);
+            }
+            catch
+            {
+                MessageBox.Show("Save path error!");
+                if (fs != null)
+                    fs.Close();
+                saveBtn.Show();
+                return;
+            }            
+            fs.SetLength(jsonContent.Length);
+            fs.Write(jsonContent,0,jsonContent.Length);
+            fs.Close();
+            saveBtn.Show();
+            //             var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
+            //             if (m == DialogResult.Yes)
+            //             {
+            //                 System.Diagnostics.Process.Start(pathFileSave1.Text);
+            //             }
+
+        }        
     }
 }

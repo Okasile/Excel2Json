@@ -1,1 +1,1 @@
-{"excel1":"C:\\Users\\okasi\\Desktop\\WoodyTable.xlsx","excel2":"C:\\Users\\okasi\\Desktop\\WoodyTable.xlsx","saveFile1":"C:\\Users\\okasi\\Desktop\\Excel2Json.txt","saveFile2":"C:\\Users\\okasi\\Desktop\\Excel2Json2.txt"}
+{"excel":"C:\\Users\\okasi\\Desktop\\WoodyTable.xlsx","saveFile":"C:\\Users\\okasi\\Desktop\\Excel2Json","sheets":1,"isRemoveHead":false,"isCompress":true,"unCompressSrcPath":null,"unCompressSavePath":""}

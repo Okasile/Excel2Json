@@ -1,1 +1,1 @@
-{"excel":"C:\\Users\\okasi\\Desktop\\testttt.xlsx","saveFile":"C:\\Users\\okasi\\Desktop\\Excel2Json.txt","sheets":-1,"isRemoveHead":false}
+{"excel":"C:\\Users\\okasi\\Desktop\\block\u5305\u5185\u914D\u7F6E\u8868.xlsx","saveFile":"C:\\Users\\okasi\\Desktop\\Excel2Json2","sheets":0,"isRemoveHead":true,"isCompress":true,"unCompressSrcPath":"C:\\Users\\okasi\\Desktop\\Excel2Json2","unCompressSavePath":"C:\\Users\\okasi\\Desktop\\Excel2Json2.txt"}

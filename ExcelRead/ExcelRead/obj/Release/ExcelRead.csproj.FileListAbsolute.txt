@@ -17,3 +17,7 @@ D:\excel2json\ExcelRead\ExcelRead\bin\Release\ExcelRead.exe
 D:\excel2json\ExcelRead\ExcelRead\bin\Release\ExcelRead.pdb
 D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.exe
 D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.pdb
+D:\excel2json\ExcelRead\ExcelRead\bin\Release\ICSharpCode.SharpZipLib.dll
+D:\excel2json\ExcelRead\ExcelRead\bin\Release\ICSharpCode.SharpZipLib.pdb
+D:\excel2json\ExcelRead\ExcelRead\bin\Release\ICSharpCode.SharpZipLib.xml
+D:\excel2json\ExcelRead\ExcelRead\obj\Release\ExcelRead.csproj.CopyComplete
