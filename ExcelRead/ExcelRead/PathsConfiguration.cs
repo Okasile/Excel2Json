@@ -4,7 +4,7 @@
     {
         public string excel, saveFile;
         public int sheets=1;
-        public bool isRemoveHead;
+        public int removedHead;
         public bool isCompress;
 
         public string unCompressSrcPath, unCompressSavePath;

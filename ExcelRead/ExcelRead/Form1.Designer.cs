@@ -37,7 +37,6 @@
             this.saveBtn = new System.Windows.Forms.Button();
             this.sheet1 = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.RemoveHeadLine1 = new System.Windows.Forms.CheckBox();
             this.isUseCompress = new System.Windows.Forms.CheckBox();
             this.unCompressBtn = new System.Windows.Forms.Button();
             this.unCompressSrcPath = new System.Windows.Forms.TextBox();
@@ -46,7 +45,10 @@
             this.unCompressSaveBtn = new System.Windows.Forms.Button();
             this.unCompressSavePath = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.ignoreLines = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.sheet1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ignoreLines)).BeginInit();
             this.SuspendLayout();
             // 
             // pathExcel1
@@ -117,11 +119,6 @@
             this.sheet1.Name = "sheet1";
             this.sheet1.Size = new System.Drawing.Size(120, 21);
             this.sheet1.TabIndex = 7;
-            this.sheet1.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.sheet1.ValueChanged += new System.EventHandler(this.sheet1_ValueChanged);
             // 
             // label3
@@ -132,16 +129,6 @@
             this.label3.Size = new System.Drawing.Size(83, 12);
             this.label3.TabIndex = 8;
             this.label3.Text = "Sheet Index :";
-            // 
-            // RemoveHeadLine1
-            // 
-            this.RemoveHeadLine1.AutoSize = true;
-            this.RemoveHeadLine1.Location = new System.Drawing.Point(272, 60);
-            this.RemoveHeadLine1.Name = "RemoveHeadLine1";
-            this.RemoveHeadLine1.Size = new System.Drawing.Size(84, 16);
-            this.RemoveHeadLine1.TabIndex = 9;
-            this.RemoveHeadLine1.Text = "去掉第一行";
-            this.RemoveHeadLine1.UseVisualStyleBackColor = true;
             // 
             // isUseCompress
             // 
@@ -218,11 +205,44 @@
             this.label5.TabIndex = 15;
             this.label5.Text = "保存目录";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(157, 62);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(65, 12);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "忽略行数：";
+            // 
+            // ignoreLines
+            // 
+            this.ignoreLines.Location = new System.Drawing.Point(246, 60);
+            this.ignoreLines.Maximum = new decimal(new int[] {
+            1316134911,
+            2328,
+            0,
+            0});
+            this.ignoreLines.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.ignoreLines.Name = "ignoreLines";
+            this.ignoreLines.Size = new System.Drawing.Size(120, 21);
+            this.ignoreLines.TabIndex = 18;
+            this.ignoreLines.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(748, 563);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.ignoreLines);
             this.Controls.Add(this.unCompressSaveBtn);
             this.Controls.Add(this.unCompressSavePath);
             this.Controls.Add(this.label5);
@@ -231,7 +251,6 @@
             this.Controls.Add(this.unCompressSrcPath);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.isUseCompress);
-            this.Controls.Add(this.RemoveHeadLine1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.sheet1);
             this.Controls.Add(this.saveBtn);
@@ -244,6 +263,7 @@
             this.Name = "Form1";
             this.Text = "Excel2Json";
             ((System.ComponentModel.ISupportInitialize)(this.sheet1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ignoreLines)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -260,7 +280,6 @@
         private System.Windows.Forms.Button saveBtn;
         private System.Windows.Forms.NumericUpDown sheet1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox RemoveHeadLine1;
         private System.Windows.Forms.CheckBox isUseCompress;
         private System.Windows.Forms.Button unCompressBtn;
         private System.Windows.Forms.TextBox unCompressSrcPath;
@@ -269,6 +288,8 @@
         private System.Windows.Forms.Button unCompressSaveBtn;
         private System.Windows.Forms.TextBox unCompressSavePath;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown ignoreLines;
     }
 }
 
