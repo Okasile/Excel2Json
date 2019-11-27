@@ -35,4 +35,3 @@ D:\excel2json\ExcelRead\ExcelRead\bin\Debug\ICSharpCode.SharpZipLib.dll
 D:\excel2json\ExcelRead\ExcelRead\bin\Debug\ICSharpCode.SharpZipLib.pdb
 D:\excel2json\ExcelRead\ExcelRead\bin\Debug\ICSharpCode.SharpZipLib.xml
 D:\excel2json\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CopyComplete
-D:\excel2json\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csprojAssemblyReference.cache

@@ -1,1 +1,1 @@
-{"excel":"C:\\Users\\okasi\\Desktop\\WoodyTable.xlsx","saveFile":"C:\\Users\\okasi\\Desktop\\Excel2Json","sheets":1,"isRemoveHead":false,"isCompress":true,"unCompressSrcPath":null,"unCompressSavePath":""}
+{"excel":"C:\\Users\\okasi\\Desktop\\block\u5305\u5185\u914D\u7F6E\u8868.xlsx","saveFile":"C:\\Users\\okasi\\Desktop\\Excel2Json.txt","sheets":0,"removedHead":1,"isCompress":false,"unCompressSrcPath":"","unCompressSavePath":""}

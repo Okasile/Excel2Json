@@ -56,7 +56,7 @@ namespace ExcelRead
                 PathsConfiguration ps = LitJson.JsonMapper.ToObject<PathsConfiguration>(jsonContent);
                 pathExcel1.Text = ps.excel;
                 pathFileSave1.Text = ps.saveFile;
-                ignoreLines.Value = ps.removedHead<ignoreLines.Maximum && ps.removedHead>=ignoreLines.Minimum? ps.removedHead: ignoreLines.Minimum;
+                ignoreLines.Value = ps.removedHead < ignoreLines.Maximum && ps.removedHead >= ignoreLines.Minimum ? ps.removedHead : ignoreLines.Minimum;
                 sheet1.Value = ps.sheets >= sheet1.Minimum && ps.sheets <= sheet1.Maximum ? ps.sheets : sheet1.Minimum;
                 isUseCompress.Checked = ps.isCompress;
                 unCompressSrcPath.Text = ps.unCompressSrcPath;
@@ -348,116 +348,130 @@ namespace ExcelRead
             }
         }
 
-            string GetSheetJsonContent(DataSet _dataset, int _sheetPage, int _removeHead)
+        string GetSheetJsonContent(DataSet _dataset, int _sheetPage, int _removeHead)
+        {
+            var table = _dataset.Tables[_sheetPage];
+            if (table.Rows.Count <= _removeHead)
+                return string.Empty;
+            List<string> tempKey = new List<string>();
+            for (int _c = 0; _c < table.Columns.Count; _c++)
             {
-                var table = _dataset.Tables[_sheetPage];
-                if (table.Rows.Count <= _removeHead)
-                    return string.Empty;
-                List<string> tempKey = new List<string>();
-                for (int _c = 0; _c < table.Columns.Count; _c++)
+                var v = table.Rows[0][_c];
+                if (v != DBNull.Value)
                 {
-                    var v = table.Rows[0][_c];
-                    if (v != DBNull.Value)
-                    {
-                        tempKey.Add(v.ToString());
-                    }
+                    tempKey.Add(v.ToString());
                 }
-                List<Dictionary<string, object>> dicList = new List<Dictionary<string, object>>();
-                for (int i = _removeHead; i < table.Rows.Count; i++)
+            }
+            List<Dictionary<string, object>> dicList = new List<Dictionary<string, object>>();
+            List<string> errKeys = new List<string>();
+            for (int i = _removeHead; i < table.Rows.Count; i++)
+            {
+                Dictionary<string, object> tempDic = new Dictionary<string, object>();
+                for (int k = 0; k < tempKey.Count; k++)
                 {
-                    Dictionary<string, object> tempDic = new Dictionary<string, object>();
-                    for (int k = 0; k < tempKey.Count; k++)
+                    string _key = tempKey[k];
+                    var v = table.Rows[i][k];
+                    if (v is double)
                     {
-                        string _key = tempKey[k];
-                        var v = table.Rows[i][k];
-                        if (v is double)
+                        if (Convert.ToInt32(v) == Convert.ToSingle(v))
                         {
-                            if (Convert.ToInt32(v) == Convert.ToSingle(v))
-                            {
-                                v = Convert.ToInt32(v);
-                            }
+                            v = Convert.ToInt32(v);
                         }
-                        if (v == DBNull.Value)
-                            v = null;
-                        tempDic.Add(_key, v);
                     }
-                    dicList.Add(tempDic);
-                }
-                string jsonContent = LitJson.JsonMapper.ToJson(dicList);
-                if (jsonContent == null)
-                    jsonContent = string.Empty;
-                return jsonContent;
+                    if (v == DBNull.Value)
+                        v = null;
+                    if (!tempDic.ContainsKey(_key))
+                        tempDic.Add(_key, v);
+                    else
+                    {
+                        if (!errKeys.Contains(_key))
+                            errKeys.Add(_key);
+                    }
+                }               
+                dicList.Add(tempDic);
             }
-
-            void ReadAndSave_UnCompress(string pathCompressFile, string pathToSave)
+            if (errKeys.Count > 0)
             {
-                try
+                foreach (var _v in errKeys)
                 {
-                    FileStream srcFs = new FileStream(pathCompressFile, FileMode.OpenOrCreate);
-                    byte[] _compressedBytes = new byte[srcFs.Length];
-                    srcFs.Read(_compressedBytes, 0, _compressedBytes.Length);
-                    srcFs.Close();
-                    string unCompressErr;
-                    byte[] _readResult = ZipHelper.GZipDecompress(_compressedBytes, out unCompressErr);
-                    SaveToFile(_readResult, pathToSave);
-                }
-                catch
-                {
-                    MessageBox.Show("UnCompress err");
+                    MessageBox.Show("key 重复: " + _v);
                 }
             }
+            string jsonContent = LitJson.JsonMapper.ToJson(dicList);
+            if (jsonContent == null)
+                jsonContent = string.Empty;
+            return jsonContent;
+        }
 
-
-            void SaveToFile(string jsonContent, string path)
+        void ReadAndSave_UnCompress(string pathCompressFile, string pathToSave)
+        {
+            try
             {
-                StreamWriter sw = null;
-                try
-                {
-                    sw = new StreamWriter(path, false);
-                }
-                catch
-                {
-                    MessageBox.Show("Save path error!");
-                    if (sw != null)
-                        sw.Close();
-                    saveBtn.Show();
-                    return;
-                }
-                sw.Write(jsonContent);
-                sw.Flush();
-                sw.Close();
-                saveBtn.Show();
-                //             var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
-                //             if (m == DialogResult.Yes)
-                //             {
-                //                 System.Diagnostics.Process.Start(pathFileSave1.Text);
-                //             }
+                FileStream srcFs = new FileStream(pathCompressFile, FileMode.OpenOrCreate);
+                byte[] _compressedBytes = new byte[srcFs.Length];
+                srcFs.Read(_compressedBytes, 0, _compressedBytes.Length);
+                srcFs.Close();
+                string unCompressErr;
+                byte[] _readResult = ZipHelper.GZipDecompress(_compressedBytes, out unCompressErr);
+                SaveToFile(_readResult, pathToSave);
             }
-            void SaveToFile(byte[] jsonContent, string path)
+            catch
             {
-                FileStream fs = null;
-                try
-                {
-                    fs = new FileStream(path, FileMode.OpenOrCreate);
-                }
-                catch
-                {
-                    MessageBox.Show("Save path error!");
-                    if (fs != null)
-                        fs.Close();
-                    saveBtn.Show();
-                    return;
-                }
-                fs.SetLength(jsonContent.Length);
-                fs.Write(jsonContent, 0, jsonContent.Length);
-                fs.Close();
-                saveBtn.Show();
-                //             var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
-                //             if (m == DialogResult.Yes)
-                //             {
-                //                 System.Diagnostics.Process.Start(pathFileSave1.Text);
-                //             }
-
+                MessageBox.Show("UnCompress err");
             }
         }
+
+
+        void SaveToFile(string jsonContent, string path)
+        {
+            StreamWriter sw = null;
+            try
+            {
+                sw = new StreamWriter(path, false);
+            }
+            catch
+            {
+                MessageBox.Show("Save path error!");
+                if (sw != null)
+                    sw.Close();
+                saveBtn.Show();
+                return;
+            }
+            sw.Write(jsonContent);
+            sw.Flush();
+            sw.Close();
+            saveBtn.Show();
+            //             var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
+            //             if (m == DialogResult.Yes)
+            //             {
+            //                 System.Diagnostics.Process.Start(pathFileSave1.Text);
+            //             }
+        }
+        void SaveToFile(byte[] jsonContent, string path)
+        {
+            FileStream fs = null;
+            try
+            {
+                fs = new FileStream(path, FileMode.OpenOrCreate);
+            }
+            catch
+            {
+                MessageBox.Show("Save path error!");
+                if (fs != null)
+                    fs.Close();
+                saveBtn.Show();
+                return;
+            }
+            fs.SetLength(jsonContent.Length);
+            fs.Write(jsonContent, 0, jsonContent.Length);
+            fs.Close();
+            saveBtn.Show();
+            //             var m = MessageBox.Show("已保存,是否打开查看?", "保存成功", MessageBoxButtons.YesNo);
+            //             if (m == DialogResult.Yes)
+            //             {
+            //                 System.Diagnostics.Process.Start(pathFileSave1.Text);
+            //             }
+
+        }
     }
+}
