@@ -35,3 +35,17 @@ D:\excel2json\ExcelRead\ExcelRead\bin\Debug\ICSharpCode.SharpZipLib.dll
 D:\excel2json\ExcelRead\ExcelRead\bin\Debug\ICSharpCode.SharpZipLib.pdb
 D:\excel2json\ExcelRead\ExcelRead\bin\Debug\ICSharpCode.SharpZipLib.xml
 D:\excel2json\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CopyComplete
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Debug\ExcelRead.exe.config
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Debug\ExcelRead.exe
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Debug\ExcelRead.pdb
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Debug\ICSharpCode.SharpZipLib.pdb
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Debug\ICSharpCode.SharpZipLib.xml
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csprojAssemblyReference.cache
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.Form1.resources
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.Properties.Resources.resources
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.GenerateResource.cache
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CoreCompileInputs.cache
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CopyComplete
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.exe
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.pdb

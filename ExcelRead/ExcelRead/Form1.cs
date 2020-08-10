@@ -297,37 +297,16 @@ namespace ExcelRead
                         return;
 
                     int _sheetPage = sheetPage - 1;
-                    if (_sheetPage >= 0 && _sheetPage < dataset.Tables.Count) //单个
+                   
+                    //读取
                     {
-                        string jsonContent = GetSheetJsonContent(dataset, _sheetPage, removeHead);
-
-                        if (isUseCompress.Checked && jsonContent != string.Empty)
-                        {
-                            try
-                            {
-                                byte[] jsonB = Encoding.UTF8.GetBytes(jsonContent);
-                                byte[] _result = ZipHelper.GZipCompress(jsonB);
-                                SaveToFile(_result, pathSaveFile);
-                                return;
-                            }
-                            catch
-                            {
-                                MessageBox.Show("压缩失败");
-                            }
-                        }
-                        SaveToFile(jsonContent, pathSaveFile);
-                    }
-                    else //多个存成json数组
-                    {
-                        List<string> allSheetsJson = new List<string>();
+                        string allSheetsListJson = string.Empty;
                         for (int _sheetIndex = 0; _sheetIndex < dataset.Tables.Count; _sheetIndex++)
                         {
-                            string jsonContent = GetSheetJsonContent(dataset, _sheetIndex, removeHead);
-                            if (jsonContent != string.Empty)
-                                allSheetsJson.Add(jsonContent);
+                            allSheetsListJson += GetSheetJsonContent(dataset, _sheetIndex, removeHead) + (_sheetIndex == dataset.Tables.Count-1?"":",");                           
                         }
-                        string allSheetsListJson = LitJson.JsonMapper.ToJson(allSheetsJson);
-                        if (isUseCompress.Checked && allSheetsJson.Count > 0)
+                        allSheetsListJson = AddBigMark(allSheetsListJson); 
+                        if (isUseCompress.Checked)
                         {
                             try
                             {
@@ -348,59 +327,119 @@ namespace ExcelRead
             }
         }
 
+        char dyMark = '"';
+        string AddDQMark(string s)
+        {
+            return dyMark + s + dyMark;
+        }
+        string AddBigMark(string s)
+        {
+            return "{" + s + "}";
+        }
+
         string GetSheetJsonContent(DataSet _dataset, int _sheetPage, int _removeHead)
         {
             var table = _dataset.Tables[_sheetPage];
             if (table.Rows.Count <= _removeHead)
                 return string.Empty;
+            if (table.Columns.Count < 1)
+                return string.Empty;
+            string tableName = table.TableName;
+
+            string dicContentJson = string.Empty;
+
             List<string> tempKey = new List<string>();
-            for (int _c = 0; _c < table.Columns.Count; _c++)
+            for (int _c = _removeHead + 1; _c < table.Rows.Count; _c++)
             {
-                var v = table.Rows[0][_c];
+                var v = table.Rows[_c][0];
                 if (v != DBNull.Value)
                 {
                     tempKey.Add(v.ToString());
                 }
             }
-            List<Dictionary<string, object>> dicList = new List<Dictionary<string, object>>();
-            List<string> errKeys = new List<string>();
-            for (int i = _removeHead; i < table.Rows.Count; i++)
+
+            List<string> valuesStr = new List<string>();
+
+            List<SupportTypeRecord> valuesType = new List<SupportTypeRecord>();            
+            List<string> membersNames = new List<string>();
+            for (int columnId = 1; columnId < table.Columns.Count; columnId++)
             {
-                Dictionary<string, object> tempDic = new Dictionary<string, object>();
-                for (int k = 0; k < tempKey.Count; k++)
+                string s = (table.Rows[_removeHead][columnId]).ToString();
+                string[] split = s.Split(',');
+                if (split == null || split.Length != 2)
                 {
-                    string _key = tempKey[k];
-                    var v = table.Rows[i][k];
-                    if (v is double)
-                    {
-                        if (Convert.ToInt32(v) == Convert.ToSingle(v))
-                        {
-                            v = Convert.ToInt32(v);
-                        }
-                    }
-                    if (v == DBNull.Value)
-                        v = null;
-                    if (!tempDic.ContainsKey(_key))
-                        tempDic.Add(_key, v);
-                    else
-                    {
-                        if (!errKeys.Contains(_key))
-                            errKeys.Add(_key);
-                    }
-                }               
-                dicList.Add(tempDic);
-            }
-            if (errKeys.Count > 0)
-            {
-                foreach (var _v in errKeys)
+                    MessageBox.Show("split error " + columnId);
+                    return string.Empty;
+                }
+                membersNames.Add(split[1]);
+
+                if (split[0] == "string")
                 {
-                    MessageBox.Show("key 重复: " + _v);
+                    valuesType.Add(new SupportTypeRecord(false,true));
+                }
+                else if (split[0] == "int")
+                {
+                    valuesType.Add(new SupportTypeRecord(false, false));
+                }
+                else if (split[0] == "float")
+                {
+                    valuesType.Add(new SupportTypeRecord(false, false));
+                }
+                else if (split[0] == "list<string>")
+                {
+                    valuesType.Add(new SupportTypeRecord(true, true));
+                }
+                else if (split[0] == "list<int>")
+                {
+                    valuesType.Add(new SupportTypeRecord(true, false));
+                }
+                else if (split[0] == "list<float>")
+                {
+                    valuesType.Add(new SupportTypeRecord(true, false));
                 }
             }
-            string jsonContent = LitJson.JsonMapper.ToJson(dicList);
-            if (jsonContent == null)
-                jsonContent = string.Empty;
-            return jsonContent;
+
+            for (int i = _removeHead + 1; i < table.Rows.Count; i++)
+            {
+                string str = string.Empty;
+                for (int valuesId = 1; valuesId < table.Columns.Count; valuesId++)
+                {
+                    string realContent = table.Rows[i][valuesId].ToString();
+                    SupportTypeRecord tr = valuesType[valuesId - 1];
+                    if (tr.isList)
+                    {
+                        if (tr.isString)
+                        {
+                            string[] strs = realContent.Split(',');
+                            for(int sId = 0; sId < strs.Length; sId++)
+                            {
+                                strs[sId] = AddDQMark(strs[sId]);
+                            }
+                            realContent = string.Empty;
+                            for (int sId = 0; sId < strs.Length; sId++)
+                            {
+                                realContent += strs[sId] + (sId == strs.Length - 1 ? "" : ",");
+                            }
+                        }
+                        realContent = "[" + realContent + "]";
+                    }
+                    else if (tr.isString)
+                    {
+                        realContent = AddDQMark(realContent);
+                    }
+                    str += AddDQMark(membersNames[valuesId - 1])+":" + realContent + (valuesId == table.Columns.Count-1? "":",");                                     
+                }
+                valuesStr.Add(str);
+            }
+
+            for (int i = 0; i < tempKey.Count; i++)
+            {
+                dicContentJson += (AddDQMark(tempKey[i]) + ":" + AddBigMark(valuesStr[i]) + (i == tempKey.Count - 1 ? "" : ","));
+            }
+
+            string result = AddDQMark(tableName) + ":" + AddBigMark(dicContentJson); //放最后
+           
+            return result;
         }
 
         void ReadAndSave_UnCompress(string pathCompressFile, string pathToSave)
@@ -473,5 +512,23 @@ namespace ExcelRead
             //             }
 
         }
+
+        private void ignoreLines_ValueChanged(object sender, EventArgs e)
+        {
+            RememberPaths();
+        }
     }
 }
+
+public class SupportTypeRecord
+{
+    public bool isList;
+    public bool isString;
+
+    public SupportTypeRecord(bool _isList,bool _isStr)
+    {
+        isList = _isList;
+        isString = _isStr;
+    }
+}
+

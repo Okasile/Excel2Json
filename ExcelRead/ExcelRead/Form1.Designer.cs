@@ -222,19 +222,10 @@
             2328,
             0,
             0});
-            this.ignoreLines.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.ignoreLines.Name = "ignoreLines";
             this.ignoreLines.Size = new System.Drawing.Size(120, 21);
             this.ignoreLines.TabIndex = 18;
-            this.ignoreLines.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
+            this.ignoreLines.ValueChanged += new System.EventHandler(this.ignoreLines_ValueChanged);
             // 
             // Form1
             // 

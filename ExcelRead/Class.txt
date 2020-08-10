@@ -1,0 +1,23 @@
+
+
+[System.Serializable]
+public class ParentClass
+{
+    public Dictionary<string, A> Dic1 = new Dictionary<string, A>() { };
+    public Dictionary<string, B> Dic2 = new Dictionary<string, B>() { };
+}
+
+[System.Serializable]
+public class A
+{
+    public string cn ;
+    public string en = "err";
+    public int id = -1;
+}
+[System.Serializable]
+public class B
+{
+    public List<string> listStr;
+    public List<float> listFloats;
+    public List<int> listInt;
+}
