@@ -404,8 +404,16 @@ namespace ExcelRead
                 string str = string.Empty;
                 for (int valuesId = 1; valuesId < table.Columns.Count; valuesId++)
                 {
-                    string realContent = table.Rows[i][valuesId].ToString();
+                    var rv = table.Rows[i][valuesId];
+                    string realContent = rv.ToString();
                     SupportTypeRecord tr = valuesType[valuesId - 1];
+
+                    if (rv == DBNull.Value)
+                    {
+                        if (!tr.isList && !tr.isString)
+                            realContent = "0";
+                    }                    
+
                     if (tr.isList)
                     {
                         if (tr.isString)

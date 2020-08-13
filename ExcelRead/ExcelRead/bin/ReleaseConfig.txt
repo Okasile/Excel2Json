@@ -1,1 +1,1 @@
-{"excel":"C:\\Users\\34446\\Desktop\\bbb.xlsx","saveFile":"C:\\Users\\34446\\Desktop\\json.txt","sheets":0,"removedHead":1,"isCompress":false,"unCompressSrcPath":"","unCompressSavePath":""}
+{"excel":"C:\\Users\\34446\\Desktop\\bbb.xlsx","saveFile":"C:\\Users\\34446\\Desktop\\json.txt","sheets":0,"removedHead":0,"isCompress":false,"unCompressSrcPath":"","unCompressSavePath":""}
