@@ -48,3 +48,4 @@ D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CoreCompil
 D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csproj.CopyComplete
 D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.exe
 D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.pdb
+D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Debug\ExcelRead.csprojAssemblyReference.cache

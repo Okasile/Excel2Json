@@ -297,15 +297,15 @@ namespace ExcelRead
                         return;
 
                     int _sheetPage = sheetPage - 1;
-                   
+
                     //读取
                     {
                         string allSheetsListJson = string.Empty;
                         for (int _sheetIndex = 0; _sheetIndex < dataset.Tables.Count; _sheetIndex++)
                         {
-                            allSheetsListJson += GetSheetJsonContent(dataset, _sheetIndex, removeHead) + (_sheetIndex == dataset.Tables.Count-1?"":",");                           
+                            allSheetsListJson += GetSheetJsonContent(dataset, _sheetIndex, removeHead) + (_sheetIndex == dataset.Tables.Count - 1 ? "" : ",");
                         }
-                        allSheetsListJson = AddBigMark(allSheetsListJson); 
+                        allSheetsListJson = AddBigMark(allSheetsListJson);
                         if (isUseCompress.Checked)
                         {
                             try
@@ -336,20 +336,43 @@ namespace ExcelRead
         {
             return "{" + s + "}";
         }
-
+        
         string GetSheetJsonContent(DataSet _dataset, int _sheetPage, int _removeHead)
         {
+            int columnsCount = 0, rowCount = 0;
             var table = _dataset.Tables[_sheetPage];
-            if (table.Rows.Count <= _removeHead)
+            for(int _cl =0;_cl < table.Columns.Count; _cl++)
+            {
+                if(table.Rows[0][_cl] == DBNull.Value)
+                {
+                    break;
+                }
+                else
+                {
+                    columnsCount++;
+                }                
+            }
+            for(int _rl = 0; _rl < table.Rows.Count; _rl++)
+            {
+                if(table.Rows[_rl][0] == DBNull.Value)
+                {
+                    break;
+                }
+                else
+                {
+                    rowCount++;
+                }
+            }
+            if (rowCount <= _removeHead)
                 return string.Empty;
-            if (table.Columns.Count < 1)
+            if (columnsCount < 1)
                 return string.Empty;
             string tableName = table.TableName;
 
             string dicContentJson = string.Empty;
 
             List<string> tempKey = new List<string>();
-            for (int _c = _removeHead + 1; _c < table.Rows.Count; _c++)
+            for (int _c = _removeHead + 1; _c < rowCount; _c++)
             {
                 var v = table.Rows[_c][0];
                 if (v != DBNull.Value)
@@ -360,11 +383,15 @@ namespace ExcelRead
 
             List<string> valuesStr = new List<string>();
 
-            List<SupportTypeRecord> valuesType = new List<SupportTypeRecord>();            
+            List<SupportTypeRecord> valuesType = new List<SupportTypeRecord>();
             List<string> membersNames = new List<string>();
-            for (int columnId = 1; columnId < table.Columns.Count; columnId++)
+            for (int columnId = 1; columnId < columnsCount; columnId++)
             {
                 string s = (table.Rows[_removeHead][columnId]).ToString();
+                if (string.IsNullOrEmpty(s))
+                {
+                    continue;
+                }
                 string[] split = s.Split(',');
                 if (split == null || split.Length != 2)
                 {
@@ -375,7 +402,7 @@ namespace ExcelRead
 
                 if (split[0] == "string")
                 {
-                    valuesType.Add(new SupportTypeRecord(false,true));
+                    valuesType.Add(new SupportTypeRecord(false, true));
                 }
                 else if (split[0] == "int")
                 {
@@ -399,27 +426,32 @@ namespace ExcelRead
                 }
             }
 
-            for (int i = _removeHead + 1; i < table.Rows.Count; i++)
+            for (int i = _removeHead + 1; i < rowCount; i++)
             {
                 string str = string.Empty;
-                for (int valuesId = 1; valuesId < table.Columns.Count; valuesId++)
+                for (int valuesId = 1; valuesId < columnsCount; valuesId++)
                 {
                     var rv = table.Rows[i][valuesId];
                     string realContent = rv.ToString();
+                    realContent = realContent.Replace("\r", string.Empty);
+                    realContent = realContent.Replace("\n", string.Empty);
+                    realContent = realContent.Replace((char)13, (char)0);
+                    realContent = realContent.Replace((char)10, (char)0);
+
                     SupportTypeRecord tr = valuesType[valuesId - 1];
 
                     if (rv == DBNull.Value)
                     {
                         if (!tr.isList && !tr.isString)
                             realContent = "0";
-                    }                    
+                    }
 
                     if (tr.isList)
                     {
                         if (tr.isString)
                         {
-                            string[] strs = realContent.Split(',');
-                            for(int sId = 0; sId < strs.Length; sId++)
+                            string[] strs = realContent.Split('*');
+                            for (int sId = 0; sId < strs.Length; sId++)
                             {
                                 strs[sId] = AddDQMark(strs[sId]);
                             }
@@ -429,13 +461,17 @@ namespace ExcelRead
                                 realContent += strs[sId] + (sId == strs.Length - 1 ? "" : ",");
                             }
                         }
+                        else
+                        {
+                            realContent = realContent.Replace("*", ",");
+                        }
                         realContent = "[" + realContent + "]";
                     }
                     else if (tr.isString)
                     {
                         realContent = AddDQMark(realContent);
                     }
-                    str += AddDQMark(membersNames[valuesId - 1])+":" + realContent + (valuesId == table.Columns.Count-1? "":",");                                     
+                    str += AddDQMark(membersNames[valuesId - 1]) + ":" + realContent + (valuesId == columnsCount - 1 ? "" : ",");
                 }
                 valuesStr.Add(str);
             }
@@ -446,7 +482,7 @@ namespace ExcelRead
             }
 
             string result = AddDQMark(tableName) + ":" + AddBigMark(dicContentJson); //放最后
-           
+
             return result;
         }
 
@@ -533,7 +569,7 @@ public class SupportTypeRecord
     public bool isList;
     public bool isString;
 
-    public SupportTypeRecord(bool _isList,bool _isStr)
+    public SupportTypeRecord(bool _isList, bool _isStr)
     {
         isList = _isList;
         isString = _isStr;

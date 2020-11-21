@@ -27,7 +27,6 @@ D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Release\ExcelRead.pdb
 D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Release\ICSharpCode.SharpZipLib.dll
 D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Release\ICSharpCode.SharpZipLib.pdb
 D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\bin\Release\ICSharpCode.SharpZipLib.xml
-D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Release\ExcelRead.csprojAssemblyReference.cache
 D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Release\ExcelRead.Form1.resources
 D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Release\ExcelRead.Properties.Resources.resources
 D:\Projects\EXCEL2JSON\ExcelRead\ExcelRead\obj\Release\ExcelRead.csproj.GenerateResource.cache
